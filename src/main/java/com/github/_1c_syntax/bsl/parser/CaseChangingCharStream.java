@@ -51,7 +51,7 @@
 package com.github._1c_syntax.bsl.parser;
 
 import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.UnicodeCharStream;
+//import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.misc.Interval;
 
 /**
@@ -63,17 +63,17 @@ import org.antlr.v4.runtime.misc.Interval;
  * 'BEGIN' if constructor parameter upper=true but getText() would return
  * 'BeGiN'.
  */
-public class CaseChangingCharStream implements UnicodeCharStream {
+public class CaseChangingCharStream implements CharStream {
 
-  private final UnicodeCharStream stream;
+  private final CharStream stream;
 
   /**
-   * Constructs a new CaseChangingCharStream wrapping the given {@link UnicodeCharStream} forcing
+   * Constructs a new CaseChangingCharStream wrapping the given {@link CharStream} forcing
    * all characters to upper case.
    *
    * @param stream The stream to wrap.
    */
-  public CaseChangingCharStream(UnicodeCharStream stream) {
+  public CaseChangingCharStream(CharStream stream) {
     this.stream = stream;
   }
 
@@ -126,8 +126,8 @@ public class CaseChangingCharStream implements UnicodeCharStream {
     return stream.getSourceName();
   }
 
-  @Override
-  public boolean supportsUnicodeCodePoints() {
-    return stream.supportsUnicodeCodePoints();
-  }
+//  @Override
+//  public boolean supportsUnicodeCodePoints() {
+//    return stream.supportsUnicodeCodePoints();
+//  }
 }
