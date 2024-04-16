@@ -25,14 +25,12 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.atn.ATN;
 import org.antlr.v4.runtime.atn.LexerATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
+import org.antlr.v4.runtime.dfa.DFA;
 
 public class CRAwareLexerATNSimulator extends LexerATNSimulator {
-  public CRAwareLexerATNSimulator(ATN atn) {
-    super(atn);
-  }
-
-  public CRAwareLexerATNSimulator(Lexer recog, ATN atn) {
-    super(recog, atn);
+  public CRAwareLexerATNSimulator(Lexer recog, ATN atn, DFA[] dfas, PredictionContextCache sharedContextCache) {
+    super(recog, atn, dfas, sharedContextCache);
   }
 
   @Override
