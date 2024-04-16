@@ -43,7 +43,7 @@ gitVersioning.apply {
 val isSnapshot = gitVersioning.gitVersionDetails.refType != GitRefType.TAG
 
 dependencies {
-    implementation("com.tunnelvisionlabs", "antlr4", "4.9.0")
+    implementation("org.antlr", "antlr4", "4.13.1")
     implementation("com.github.1c-syntax", "utils", "0.5.1")
     implementation("commons-io", "commons-io", "2.15.1")
 }
