@@ -27,6 +27,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ConsoleErrorListener;
+import org.antlr.v4.runtime.IntStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.Token;
@@ -36,12 +37,13 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 import static org.antlr.v4.runtime.Token.EOF;
@@ -62,6 +64,8 @@ public abstract class Tokenizer<T extends BSLParserRuleContext, P extends Parser
   private final Class<P> parserClass;
   protected P parser;
 
+  private final Optional<Method> setInputStreamMethod;
+
   protected Tokenizer(String content, Lexer lexer, Class<P> parserClass) {
     this(IOUtils.toInputStream(content, StandardCharsets.UTF_8), lexer, parserClass);
   }
@@ -72,6 +76,11 @@ public abstract class Tokenizer<T extends BSLParserRuleContext, P extends Parser
     this.content = content;
     this.lexer = lexer;
     this.parserClass = parserClass;
+    var methods = lexer.getClass().getMethods();
+    setInputStreamMethod = Arrays.stream(methods)
+      .filter(method -> "setInputStream".equals(method.getName())
+        && method.getParameterCount() == 1
+        && method.getParameterTypes()[0] == IntStream.class).findFirst();
   }
 
   /**
@@ -85,6 +94,7 @@ public abstract class Tokenizer<T extends BSLParserRuleContext, P extends Parser
 
   /**
    * Возвращает абстрактное синтаксическое дерево, полученное на основании парсинга
+   *
    * @return AST
    */
   public T getAst() {
@@ -123,15 +133,23 @@ public abstract class Tokenizer<T extends BSLParserRuleContext, P extends Parser
 
     try (
       var ubis = new UnicodeBOMInputStream(content);
-      Reader inputStreamReader = new InputStreamReader(ubis, StandardCharsets.UTF_8)
     ) {
       ubis.skipBOM();
-      input = CharStreams.fromReader(inputStreamReader);
+      input = CharStreams.fromStream(ubis);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
 
-    lexer.setInputStream(input);
+    if (setInputStreamMethod.isPresent()) {
+      try {
+        setInputStreamMethod.get().invoke(lexer, input);
+      } catch (IllegalAccessException | InvocationTargetException e) {
+        throw new RuntimeException(e);
+      }
+    } else {
+      lexer.setInputStream(input);
+    }
+
     lexer.removeErrorListener(ConsoleErrorListener.INSTANCE);
 
     var tempTokenStream = new CommonTokenStream(lexer);
