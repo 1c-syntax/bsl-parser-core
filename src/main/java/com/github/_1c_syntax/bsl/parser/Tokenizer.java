@@ -49,7 +49,7 @@ import static org.antlr.v4.runtime.Token.EOF;
  */
 public abstract class Tokenizer<T extends BSLParserRuleContext, P extends Parser> {
 
-  private final String content;
+  private String content;
   private final Lexer lexer;
   private final Lazy<CommonTokenStream> tokenStream = new Lazy<>(this::computeTokenStream);
   private final Lazy<List<Token>> tokens = new Lazy<>(this::computeTokens);
@@ -111,6 +111,7 @@ public abstract class Tokenizer<T extends BSLParserRuleContext, P extends Parser
 
   private CommonTokenStream computeTokenStream() {
     lexer.setInputStream(CharStreams.fromString(content));
+    content = null;
     lexer.removeErrorListener(ConsoleErrorListener.INSTANCE);
     var tempTokenStream = new CommonTokenStream(lexer);
     tempTokenStream.fill();
