@@ -1,7 +1,7 @@
 /*
  * This file is a part of BSL Parser Core.
  *
- * Copyright (c) 2018-2024
+ * Copyright (c) 2018-2025
  * Alexey Sosnoviy <labotamy@gmail.com>, Nikita Fedkin <nixel2007@gmail.com>, Valery Maximov <maximovvalery@gmail.com>
  *
  * SPDX-License-Identifier: LGPL-3.0-or-later
@@ -25,12 +25,14 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.atn.ATN;
 import org.antlr.v4.runtime.atn.LexerATNSimulator;
-import org.antlr.v4.runtime.atn.PredictionContextCache;
-import org.antlr.v4.runtime.dfa.DFA;
 
 public class CRAwareLexerATNSimulator extends LexerATNSimulator {
-  public CRAwareLexerATNSimulator(Lexer recog, ATN atn, DFA[] dfas, PredictionContextCache sharedContextCache) {
-    super(recog, atn, dfas, sharedContextCache);
+  public CRAwareLexerATNSimulator(ATN atn) {
+    super(atn);
+  }
+
+  public CRAwareLexerATNSimulator(Lexer recog, ATN atn) {
+    super(recog, atn);
   }
 
   @Override

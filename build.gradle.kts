@@ -21,7 +21,7 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
-    maven(url = "https://jitpack.io")
+    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
 }
 
 group = "io.github.1c-syntax"
@@ -43,8 +43,8 @@ gitVersioning.apply {
 val isSnapshot = gitVersioning.gitVersionDetails.refType != GitRefType.TAG
 
 dependencies {
-    implementation("org.antlr", "antlr4", "4.13.1")
-    implementation("com.github.1c-syntax", "utils", "0.5.1")
+    implementation("io.github.1c-syntax", "antlr4", "0.1.1")
+    implementation("io.github.1c-syntax", "utils", "0.6.2")
     implementation("commons-io", "commons-io", "2.15.1")
 }
 
@@ -78,7 +78,7 @@ tasks.check {
 tasks.jacocoTestReport {
     reports {
         xml.required.set(true)
-        xml.outputLocation.set(File("$buildDir/reports/jacoco/test/jacoco.xml"))
+        xml.outputLocation.set(File("${layout.buildDirectory.get()}/reports/jacoco/test/jacoco.xml"))
     }
 }
 
@@ -105,7 +105,10 @@ sonar {
         property("sonar.projectKey", "1c-syntax_bsl-parser-core")
         property("sonar.projectName", "BSL Parser Core")
         property("sonar.scm.exclusions.disabled", "true")
-        property("sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/test/jacoco.xml")
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
+            "${layout.buildDirectory.get()}/reports/jacoco/test/jacoco.xml"
+        )
     }
 }
 
