@@ -7,13 +7,13 @@ plugins {
     jacoco
     `java-library`
     signing
-    id("org.sonarqube") version "5.0.0.4638"
+    id("org.sonarqube") version "6.0.1.5171"
     id("org.cadixdev.licenser") version "0.6.1"
-    id("me.qoomon.git-versioning") version "6.4.3"
-    id("io.freefair.javadoc-links") version "8.6"
-    id("io.freefair.javadoc-utf-8") version "8.6"
-    id("com.github.ben-manes.versions") version "0.51.0"
-    id("io.freefair.maven-central.validate-poms") version "8.6"
+    id("me.qoomon.git-versioning") version "6.4.4"
+    id("io.freefair.javadoc-links") version "8.12.1"
+    id("io.freefair.javadoc-utf-8") version "8.12.1"
+    id("com.github.ben-manes.versions") version "0.52.0"
+    id("io.freefair.maven-central.validate-poms") version "8.12.1"
     id("ru.vyarus.pom") version "3.0.0"
     id("io.codearte.nexus-staging") version "0.30.0"
 }
@@ -21,7 +21,7 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
-    maven(url = "https://jitpack.io")
+    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
 }
 
 group = "io.github.1c-syntax"
@@ -43,8 +43,8 @@ gitVersioning.apply {
 val isSnapshot = gitVersioning.gitVersionDetails.refType != GitRefType.TAG
 
 dependencies {
-    implementation("org.antlr", "antlr4", "4.13.1")
-    implementation("com.github.1c-syntax", "utils", "0.5.1")
+    implementation("io.github.1c-syntax", "antlr4", "0.1.1")
+    implementation("io.github.1c-syntax", "utils", "0.6.2")
     implementation("commons-io", "commons-io", "2.15.1")
 }
 
@@ -78,7 +78,7 @@ tasks.check {
 tasks.jacocoTestReport {
     reports {
         xml.required.set(true)
-        xml.outputLocation.set(File("$buildDir/reports/jacoco/test/jacoco.xml"))
+        xml.outputLocation.set(File("${layout.buildDirectory.get()}/reports/jacoco/test/jacoco.xml"))
     }
 }
 
@@ -105,7 +105,10 @@ sonar {
         property("sonar.projectKey", "1c-syntax_bsl-parser-core")
         property("sonar.projectName", "BSL Parser Core")
         property("sonar.scm.exclusions.disabled", "true")
-        property("sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/test/jacoco.xml")
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
+            "${layout.buildDirectory.get()}/reports/jacoco/test/jacoco.xml"
+        )
     }
 }
 
